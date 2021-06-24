@@ -15,13 +15,14 @@ namespace SuperAdventure
 {
     public partial class SuperAdventure : Form
     {
-        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
+        private const string PLAYER_DATA_FILE_NAME = "./PlayerData.xml";
 
         private Player _player;
 
         public SuperAdventure()
         {
-            InitializeComponent();
+                MessageBox.Show("test", "test");
+                InitializeComponent();
 
             if (File.Exists(PLAYER_DATA_FILE_NAME))
             {
@@ -196,7 +197,7 @@ namespace SuperAdventure
             _player.UsePotion(potion);
         }
 
-        private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
             File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
         }
