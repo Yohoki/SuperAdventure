@@ -46,6 +46,7 @@ namespace SuperAdventure
             this.btnSouth = new System.Windows.Forms.Button();
             this.btnEast = new System.Windows.Forms.Button();
             this.btnWest = new System.Windows.Forms.Button();
+            this.btnTrade = new System.Windows.Forms.Button();
             this.rtbLocation = new System.Windows.Forms.RichTextBox();
             this.rtbMessages = new System.Windows.Forms.RichTextBox();
             this.dgvInventory = new System.Windows.Forms.DataGridView();
@@ -211,6 +212,16 @@ namespace SuperAdventure
             this.btnWest.UseVisualStyleBackColor = true;
             this.btnWest.Click += new System.EventHandler(this.btnWest_Click);
             // 
+            // btnTrade
+            // 
+            this.btnTrade.Location = new System.Drawing.Point(503, 457);
+            this.btnTrade.Name = "btnTrade";
+            this.btnTrade.Size = new System.Drawing.Size(75, 29);
+            this.btnTrade.TabIndex = 21;
+            this.btnTrade.Text = "Trade";
+            this.btnTrade.UseVisualStyleBackColor = true;
+            this.btnTrade.Click += new System.EventHandler(this.btnTrade_Click);
+            // 
             // rtbLocation
             // 
             this.rtbLocation.Location = new System.Drawing.Point(347, 19);
@@ -269,7 +280,7 @@ namespace SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(717, 643);
+            this.ClientSize = new System.Drawing.Size(717, 646);
             this.Controls.Add(this.dgvQuests);
             this.Controls.Add(this.dgvInventory);
             this.Controls.Add(this.rtbMessages);
@@ -280,6 +291,7 @@ namespace SuperAdventure
             this.Controls.Add(this.btnNorth);
             this.Controls.Add(this.btnUsePotion);
             this.Controls.Add(this.btnUseWeapon);
+            this.Controls.Add(this.btnTrade);
             this.Controls.Add(this.cboPotions);
             this.Controls.Add(this.cboWeapons);
             this.Controls.Add(this.label5);
@@ -315,6 +327,7 @@ namespace SuperAdventure
         private System.Windows.Forms.ComboBox cboPotions;
         private System.Windows.Forms.Button btnUseWeapon;
         private System.Windows.Forms.Button btnUsePotion;
+        private System.Windows.Forms.Button btnTrade;
         private System.Windows.Forms.Button btnNorth;
         private System.Windows.Forms.Button btnSouth;
         private System.Windows.Forms.Button btnEast;

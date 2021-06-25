@@ -21,7 +21,6 @@ namespace SuperAdventure
 
         public SuperAdventure()
         {
-                MessageBox.Show("test", "test");
                 InitializeComponent();
 
             if (File.Exists(PLAYER_DATA_FILE_NAME))
@@ -136,25 +135,26 @@ namespace SuperAdventure
             {
                 // Show/hide available movement buttons
                 btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
-                btnEast.Visible = (_player.CurrentLocation.LocationToEast != null);
+                btnEast.Visible  = (_player.CurrentLocation.LocationToEast != null);
                 btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
-                btnWest.Visible = (_player.CurrentLocation.LocationToWest != null);
+                btnWest.Visible  = (_player.CurrentLocation.LocationToWest != null);
+                btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
 
                 // Display current location name and description
-                rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
+                rtbLocation.Text  = _player.CurrentLocation.Name + Environment.NewLine;
                 rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
 
                 if (_player.CurrentLocation.MonsterLivingHere == null)
                 {
-                    cboWeapons.Visible = false;
-                    cboPotions.Visible = false;
+                    cboWeapons.Visible   = false;
+                    cboPotions.Visible   = false;
                     btnUseWeapon.Visible = false;
                     btnUsePotion.Visible = false;
                 }
                 else
                 {
-                    cboWeapons.Visible = _player.Weapons.Any();
-                    cboPotions.Visible = _player.Potions.Any();
+                    cboWeapons.Visible   = _player.Weapons.Any();
+                    cboPotions.Visible   = _player.Potions.Any();
                     btnUseWeapon.Visible = _player.Weapons.Any();
                     btnUsePotion.Visible = _player.Potions.Any();
                 }
@@ -205,6 +205,12 @@ namespace SuperAdventure
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
+        }
+        private void btnTrade_Click(object sender, EventArgs e)
+        {
+            TradingScreen tradingScreen = new(_player);
+            tradingScreen.StartPosition = FormStartPosition.CenterParent;
+            tradingScreen.ShowDialog(this);
         }
     }
 }
