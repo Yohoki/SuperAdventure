@@ -11,7 +11,6 @@ namespace Engine
         public int ID { get; set; }
         public string Name { get; set; }
         public int MaximumDamage { get; set; }
-        //public int ExperiencePoints { get; set; }
         public int RewardGold { get; set; }
         public List<LootItem> LootTable { get; set; }
 

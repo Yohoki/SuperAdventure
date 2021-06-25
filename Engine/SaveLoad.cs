@@ -111,36 +111,32 @@ namespace Engine
 
         private void SaveInventory(XmlDocument playerData, XmlNode inventoryItems)
         {
-            foreach (InventoryItem item in this.Inventory)
+            foreach (var (item, inventoryItem, idAttribute) in from InventoryItem item in this.Inventory
+                                                               let inventoryItem = playerData.CreateElement("InventoryItem")
+                                                               let idAttribute = playerData.CreateAttribute("ID")
+                                                               select (item, inventoryItem, idAttribute))
             {
-                XmlNode inventoryItem = playerData.CreateElement("InventoryItem");
-
-                XmlAttribute idAttribute = playerData.CreateAttribute("ID");
                 idAttribute.Value = item.Details.ID.ToString();
                 inventoryItem.Attributes.Append(idAttribute);
-
                 XmlAttribute quantityAttribute = playerData.CreateAttribute("Quantity");
                 quantityAttribute.Value = item.Quantity.ToString();
                 inventoryItem.Attributes.Append(quantityAttribute);
-
                 inventoryItems.AppendChild(inventoryItem);
             }
         }
 
         private void SaveQuests(XmlDocument playerData, XmlNode playerQuests)
         {
-            foreach (PlayerQuest quest in this.Quests)
+            foreach (var (quest, playerQuest, idAttribute) in from PlayerQuest quest in this.Quests
+                                                              let playerQuest = playerData.CreateElement("PlayerQuest")
+                                                              let idAttribute = playerData.CreateAttribute("ID")
+                                                              select (quest, playerQuest, idAttribute))
             {
-                XmlNode playerQuest = playerData.CreateElement("PlayerQuest");
-
-                XmlAttribute idAttribute = playerData.CreateAttribute("ID");
                 idAttribute.Value = quest.Details.ID.ToString();
                 playerQuest.Attributes.Append(idAttribute);
-
                 XmlAttribute isCompletedAttribute = playerData.CreateAttribute("IsCompleted");
                 isCompletedAttribute.Value = quest.IsCompleted.ToString();
                 playerQuest.Attributes.Append(isCompletedAttribute);
-
                 playerQuests.AppendChild(playerQuest);
             }
         }

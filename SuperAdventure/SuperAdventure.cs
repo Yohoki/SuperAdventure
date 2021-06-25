@@ -21,8 +21,23 @@ namespace SuperAdventure
 
         public SuperAdventure()
         {
-                InitializeComponent();
+            InitializeComponent();
+            LoadSaveFile();
 
+            DataBindPlayerStats();
+            InitializeInventory();
+            InitializeQuests();
+            InitializeWeapons();
+            InitializePotions();
+
+            _player.PropertyChanged += PlayerOnPropertyChanged;
+            _player.OnMessage += DisplayMessage;
+
+            _player.MoveTo(_player.CurrentLocation);
+        }
+
+        private void LoadSaveFile()
+        {
             if (File.Exists(PLAYER_DATA_FILE_NAME))
             {
                 _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
@@ -31,30 +46,31 @@ namespace SuperAdventure
             {
                 _player = Player.CreateDefaultPlayer();
             }
+        }
 
-            lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
-            lblGold.DataBindings.Add("Text", _player, "Gold");
-            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
-            lblLevel.DataBindings.Add("Text", _player, "Level");
+        private void InitializePotions()
+        {
+            cboPotions.DataSource = _player.Potions;
+            cboPotions.DisplayMember = "Name";
+            cboPotions.ValueMember = "Id";
+        }
 
-            dgvInventory.RowHeadersVisible = false;
-            dgvInventory.AutoGenerateColumns = false;
+        private void InitializeWeapons()
+        {
+            cboWeapons.DataSource = _player.Weapons;
+            cboWeapons.DisplayMember = "Name";
+            cboWeapons.ValueMember = "Id";
 
-            dgvInventory.DataSource = _player.Inventory;
-
-            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            if (_player.CurrentWeapon != null)
             {
-                HeaderText = "Name",
-                Width = 197,
-                DataPropertyName = "Description"
-            });
+                cboWeapons.SelectedItem = _player.CurrentWeapon;
+            }
 
-            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                HeaderText = "Quantity",
-                DataPropertyName = "Quantity"
-            });
+            cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
+        }
 
+        private void InitializeQuests()
+        {
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.AutoGenerateColumns = false;
 
@@ -72,26 +88,35 @@ namespace SuperAdventure
                 HeaderText = "Done?",
                 DataPropertyName = "IsCompleted"
             });
+        }
 
-            cboWeapons.DataSource = _player.Weapons;
-            cboWeapons.DisplayMember = "Name";
-            cboWeapons.ValueMember = "Id";
+        private void InitializeInventory()
+        {
+            dgvInventory.RowHeadersVisible = false;
+            dgvInventory.AutoGenerateColumns = false;
 
-            if (_player.CurrentWeapon != null)
+            dgvInventory.DataSource = _player.Inventory;
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
-                cboWeapons.SelectedItem = _player.CurrentWeapon;
-            }
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Description"
+            });
 
-            cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Quantity",
+                DataPropertyName = "Quantity"
+            });
+        }
 
-            cboPotions.DataSource = _player.Potions;
-            cboPotions.DisplayMember = "Name";
-            cboPotions.ValueMember = "Id";
-
-            _player.PropertyChanged += PlayerOnPropertyChanged;
-            _player.OnMessage += DisplayMessage;
-
-            _player.MoveTo(_player.CurrentLocation);
+        private void DataBindPlayerStats()
+        {
+            lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
+            lblGold.DataBindings.Add("Text", _player, "Gold");
+            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
+            lblLevel.DataBindings.Add("Text", _player, "Level");
         }
 
         private void DisplayMessage(object sender, MessageEventArgs messageEventArgs)
@@ -133,31 +158,36 @@ namespace SuperAdventure
 
             if (propertyChangedEventArgs.PropertyName == "CurrentLocation")
             {
-                // Show/hide available movement buttons
-                btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
-                btnEast.Visible  = (_player.CurrentLocation.LocationToEast != null);
-                btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
-                btnWest.Visible  = (_player.CurrentLocation.LocationToWest != null);
-                btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
-
                 // Display current location name and description
-                rtbLocation.Text  = _player.CurrentLocation.Name + Environment.NewLine;
+                rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
                 rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
+                HideUIButtonsOnLocationChange();
+            }
+        }
 
-                if (_player.CurrentLocation.MonsterLivingHere == null)
-                {
-                    cboWeapons.Visible   = false;
-                    cboPotions.Visible   = false;
-                    btnUseWeapon.Visible = false;
-                    btnUsePotion.Visible = false;
-                }
-                else
-                {
-                    cboWeapons.Visible   = _player.Weapons.Any();
-                    cboPotions.Visible   = _player.Potions.Any();
-                    btnUseWeapon.Visible = _player.Weapons.Any();
-                    btnUsePotion.Visible = _player.Potions.Any();
-                }
+        private void HideUIButtonsOnLocationChange()
+        {
+            // Show/hide available movement buttons
+            btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
+            btnEast.Visible = (_player.CurrentLocation.LocationToEast != null);
+            btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
+            btnWest.Visible = (_player.CurrentLocation.LocationToWest != null);
+            btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
+
+
+            if (_player.CurrentLocation.MonsterLivingHere == null)
+            {
+                cboWeapons.Visible = false;
+                cboPotions.Visible = false;
+                btnUseWeapon.Visible = false;
+                btnUsePotion.Visible = false;
+            }
+            else
+            {
+                cboWeapons.Visible = _player.Weapons.Any();
+                cboPotions.Visible = _player.Potions.Any();
+                btnUseWeapon.Visible = _player.Weapons.Any();
+                btnUsePotion.Visible = _player.Potions.Any();
             }
         }
 
