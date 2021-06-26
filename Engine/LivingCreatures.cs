@@ -16,17 +16,24 @@ namespace Engine
         }
         public int MaximumHitPoints { get; set; }
         protected int _experiencePoints;
-        public int ExperiencePoints 
+        public int ExperiencePoints
         {
             get { return _experiencePoints; }
             set { _experiencePoints = value; }
         }
+        protected int _gold;
+        public int Gold
+        {
+            get { return _gold; }
+            set { _gold = value; }
+        }
 
-        public LivingCreature(int currentHitPoints, int maximumHitPoints, int experiencePoints)
+        public LivingCreature(int currentHitPoints, int maximumHitPoints, int experiencePoints, int gold)
         {
             CurrentHitPoints = currentHitPoints;
             MaximumHitPoints = maximumHitPoints;
             ExperiencePoints = experiencePoints;
+                        Gold = gold;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

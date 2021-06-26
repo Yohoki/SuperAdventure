@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 
@@ -149,7 +146,7 @@ namespace Engine
                 player.CurrentWeapon = (Weapon)World.ItemByID(currentWeaponID);
             }
         }
-        private static void LoadQuests (XmlDocument playerData, Player player)
+        private static void LoadQuests(XmlDocument playerData, Player player)
         {
             foreach (var (isCompleted, playerQuest) in from XmlNode node in playerData.SelectNodes("/Player/PlayerQuests/PlayerQuest")
                                                        let id = Convert.ToInt32(node.Attributes["ID"].Value)
@@ -161,7 +158,7 @@ namespace Engine
                 player.Quests.Add(playerQuest);
             }
         }
-        private static void LoadInventory (XmlDocument playerData, Player player)
+        private static void LoadInventory(XmlDocument playerData, Player player)
         {
             foreach (var (id, quantity) in from XmlNode node in playerData.SelectNodes("/Player/InventoryItems/InventoryItem")
                                            let id = Convert.ToInt32(node.Attributes["ID"].Value)

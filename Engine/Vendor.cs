@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 
 namespace Engine
@@ -19,7 +18,7 @@ namespace Engine
         {
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
 
-            if(item == null)
+            if (item == null)
             {
                 // They didn't have the item, so add it to their inventory
                 Inventory.Add(new InventoryItem(itemToAdd, quantity));
@@ -46,15 +45,9 @@ namespace Engine
             // They have the item in their inventory, so decrease the quantity
             item.Quantity -= quantity;
 
-            // Don't allow negative quantities.
-            // We might want to raise an error for this situation
-            if (item.Quantity < 0)
-            {
-                item.Quantity = 0;
-            }
-
             // If the quantity is zero, remove the item from the list
-            if (item.Quantity == 0)
+            //if (item.Quantity == 0)
+            if (item.Quantity <= 0)
             {
                 Inventory.Remove(item);
             }

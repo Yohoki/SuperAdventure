@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine
 {
     public partial class Player : LivingCreature
     {
-        private int _gold;
         private Location _currentLocation;
-        private Monster _currentMonster;
+        private Monster CurrentMonster { get; set; }
 
         public event EventHandler<MessageEventArgs> OnMessage;
 
-        public int Gold
+        public new int Gold
         {
             get { return _gold; }
             set
@@ -68,10 +65,8 @@ namespace Engine
         public BindingList<PlayerQuest> Quests { get; set; }
 
         private Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints)
-                : base(currentHitPoints, maximumHitPoints, experiencePoints)
+                : base(currentHitPoints, maximumHitPoints, experiencePoints, gold)
         {
-            Gold = gold;
-
             Inventory = new BindingList<InventoryItem>();
             Quests = new BindingList<PlayerQuest>();
         }
@@ -125,7 +120,7 @@ namespace Engine
             // Notify the UI that the inventory has changed
             RaiseInventoryChangedEvent(itemToRemove);
         }
-        
+
 
         private void RaiseInventoryChangedEvent(Item item)
         {

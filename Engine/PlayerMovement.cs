@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Engine
 {
@@ -31,12 +27,12 @@ namespace Engine
             }
 
             // Does the location have a monster?
-            if (newLocation.MonsterLivingHere != null)
+            if (newLocation.HasAMonster)
             {
                 BeginBattle(newLocation);
                 return;
             }
-            _currentMonster = null;
+            CurrentMonster = null;
         }
 
         private void HealPlayerOnMovement()
@@ -80,7 +76,6 @@ namespace Engine
                 MoveTo(CurrentLocation.LocationToWest);
             }
         }
-
         private void CheckQuestAvailableHere(Location newLocation)
         {
             // See if the player already has the quest, and if they've completed it

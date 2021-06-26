@@ -41,7 +41,7 @@ namespace Engine
             }
         }
 
-        public InventoryItem (Item details, int quantity)
+        public InventoryItem(Item details, int quantity)
         {
             Details = details;
             Quantity = quantity;

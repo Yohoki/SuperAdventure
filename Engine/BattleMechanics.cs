@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine
 {
@@ -10,14 +7,13 @@ namespace Engine
     {
         private void BeginBattle(Location newLocation)
         {
-            RaiseMessage("You see a " + newLocation.MonsterLivingHere.Name);
+            // Populate the current monster with this location's monster (or null, if there is no monster here)
+            CurrentMonster = newLocation.NewInstanceOfMonsterLivingHere();
 
-            // Make a new monster, using the values from the standard monster in the World.Monster list
-            Monster standardMonster = World.MonsterByID(newLocation.MonsterLivingHere.ID);
-
-            _currentMonster = new Monster(standardMonster.ID, standardMonster.Name, standardMonster.MaximumDamage,
-                standardMonster.ExperiencePoints, standardMonster.RewardGold, standardMonster.CurrentHitPoints, standardMonster.MaximumHitPoints);
-            _currentMonster.LootTable.AddRange(standardMonster.LootTable);
+            if (CurrentMonster != null)
+            {
+                RaiseMessage("You see a " + CurrentMonster.Name);
+            }
         }
         public void UseWeapon(Weapon weapon)
         {
@@ -25,10 +21,10 @@ namespace Engine
             int damageToMonster = RandomNumberGenerator.NumberBetween(weapon.MinimumDamage, weapon.MaximumDamage);
 
             // Apply the damage to the monster's CurrentHitPoints
-            _currentMonster.CurrentHitPoints -= damageToMonster;
+            CurrentMonster.CurrentHitPoints -= damageToMonster;
 
             // Display message
-            RaiseMessage("You hit the " + _currentMonster.Name + " for " + damageToMonster + " points.");
+            RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damageToMonster + " points.");
             MonsterAttackTurn();
         }
         public void UsePotion(HealingPotion potion)
@@ -54,17 +50,17 @@ namespace Engine
 
         private void MonsterAttackTurn()
         {
-            if (_currentMonster.CurrentHitPoints <= 0)
+            if (CurrentMonster.CurrentHitPoints <= 0)
             {
                 // Monster is dead
                 MonsterIsDead();
                 return;
             }
             // Determine the amount of damage the monster does to the player
-            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
 
             // Display message
-            RaiseMessage("The " + _currentMonster.Name + " did " + damageToPlayer + " points of damage.");
+            RaiseMessage("The " + CurrentMonster.Name + " did " + damageToPlayer + " points of damage.");
 
             // Subtract damage from player
             CurrentHitPoints -= damageToPlayer;
@@ -72,7 +68,7 @@ namespace Engine
             if (CurrentHitPoints <= 0)
             {
                 // Display message
-                RaiseMessage("The " + _currentMonster.Name + " killed you.");
+                RaiseMessage("The " + CurrentMonster.Name + " killed you.");
 
                 // Move player to "Home"
                 MoveHome();
@@ -82,26 +78,26 @@ namespace Engine
         private void MonsterIsDead()
         {
             RaiseMessage("");
-            RaiseMessage("You defeated the " + _currentMonster.Name);
+            RaiseMessage("You defeated the " + CurrentMonster.Name);
 
             // Give player experience points for killing the monster
-            AddExperiencePoints(_currentMonster.ExperiencePoints);
-            RaiseMessage("You receive " + _currentMonster.ExperiencePoints + " experience points");
+            AddExperiencePoints(CurrentMonster.ExperiencePoints);
+            RaiseMessage("You receive " + CurrentMonster.ExperiencePoints + " experience points");
 
             // Give player gold for killing the monster 
-            Gold += _currentMonster.RewardGold;
-            RaiseMessage("You receive " + _currentMonster.RewardGold + " gold");
+            Gold += CurrentMonster.Gold;
+            RaiseMessage("You receive " + CurrentMonster.Gold + " gold");
 
             // Get random loot items from the monster and
             // add items to the lootedItems list, comparing a random number to the drop percentage
-            List<InventoryItem> lootedItems = (_currentMonster.LootTable
-                                        .Where( lootItem => RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
+            List<InventoryItem> lootedItems = (CurrentMonster.LootTable
+                                        .Where(lootItem => RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
                                         .Select(lootItem => new InventoryItem(lootItem.Details, 1))).ToList();
 
             // If no items were randomly selected, then add the default loot item(s).
             if (lootedItems.Count == 0)
             {
-                lootedItems.AddRange(from LootItem lootItem in _currentMonster.LootTable
+                lootedItems.AddRange(from LootItem lootItem in CurrentMonster.LootTable
                                      where lootItem.IsDefaultItem
                                      select new InventoryItem(lootItem.Details, 1));
             }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine
 {
@@ -113,27 +110,28 @@ namespace Engine
 
             Location townSquare = new(LOCATION_ID_TOWN_SQUARE,
                 "Town square", "You see a fountain.");
-            
+
             Vendor bobTheRatCatcher = new("Bob the Rat-Catcher");
-                bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_PIECE_OF_FUR), 5);
-                bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_RAT_TAIL), 3);
-                townSquare.VendorWorkingHere = bobTheRatCatcher;
+            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_PIECE_OF_FUR), 5);
+            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_RAT_TAIL), 3);
+            townSquare.VendorWorkingHere = bobTheRatCatcher;
 
             Location alchemistHut = new(LOCATION_ID_ALCHEMIST_HUT,
                 "Alchemist's hut", "There are many strange plants on the shelves.");
-                alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
+            alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
 
             Location alchemistsGarden = new(LOCATION_ID_ALCHEMISTS_GARDEN,
                 "Alchemist's garden", "Many plants are growing here.");
-                alchemistsGarden.MonsterLivingHere = MonsterByID(MONSTER_ID_RAT);
+            alchemistsGarden.AddMonster(MONSTER_ID_RAT,100);
 
             Location farmhouse = new(LOCATION_ID_FARMHOUSE,
                 "Farmhouse", "There is a small farmhouse, with a farmer in front.");
-                farmhouse.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
+            farmhouse.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
 
             Location farmersField = new(LOCATION_ID_FARM_FIELD,
                 "Farmer's field", "You see rows of vegetables growing here.");
-                farmersField.MonsterLivingHere = MonsterByID(MONSTER_ID_SNAKE);
+            farmersField.AddMonster(MONSTER_ID_RAT,20);
+            farmersField.AddMonster(MONSTER_ID_SNAKE,80);
 
             Location guardPost = new(LOCATION_ID_GUARD_POST,
                 "Guard post", "There is a large, tough-looking guard here.",
@@ -144,7 +142,7 @@ namespace Engine
 
             Location spiderField = new(LOCATION_ID_SPIDER_FIELD,
                 "Forest", "You see spider webs covering covering the trees in this forest.");
-                spiderField.MonsterLivingHere = MonsterByID(MONSTER_ID_GIANT_SPIDER);
+            spiderField.AddMonster(MONSTER_ID_GIANT_SPIDER,100);
 
             // Link the locations together
             home.LocationToNorth = townSquare;
